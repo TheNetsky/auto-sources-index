@@ -152,3 +152,5 @@ async function init() {
 }
 
 init()
+
+process.exit(1)
