@@ -1,0 +1,18 @@
+{
+  "dependencies": {
+    "axios": "^0.27.2",
+    "dotenv": "^16.0.1",
+    "jsoning": "^0.13.23"
+  },
+  "name": "postsources",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "node index.js"
+  },
+  "keywords": [],
+  "author": "Netsky",
+  "license": "ISC",
+  "description": "Simple script for updating the sources list in a Discord server."
+}
