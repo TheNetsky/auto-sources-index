@@ -134,7 +134,6 @@ async function init() {
         let response
         try {
             response = await axios(request)
-            console.log(response)
         } catch (error) {
             throw new Error(error)
         }
