@@ -148,6 +148,7 @@ async function init() {
     }
 
     console.log('Done!')
+    process.exitCode = 1
 }
 
 init()
