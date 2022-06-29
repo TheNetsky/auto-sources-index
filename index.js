@@ -134,7 +134,6 @@ async function init() {
         let response
         try {
             response = await axios(request)
-            console.log(response)
         } catch (error) {
             throw new Error(error)
         }
@@ -144,7 +143,7 @@ async function init() {
         // Store messageId in database
         db.set(embed.url, response.data.id)
 
-        console.log('Webhook Posted!')
+        console.log(`${embed.url} webhook posted/edited!`)
         await new Promise(r => setTimeout(r, 2000));
     }
 
