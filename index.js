@@ -13,7 +13,7 @@ async function init() {
     try {
         const request = {
             method: 'GET',
-            url: 'https://raw.githubusercontent.com/TheNetsky/static-files/main/AutoSources/repos.json'
+            url: config.reposURL
         }
 
         const response = await axios(request)
@@ -32,26 +32,26 @@ async function init() {
         try {
             const request = {
                 method: 'GET',
-                url: `${repo}/versioning.json`
+                url: `${repo.url}/versioning.json`
             }
 
             const response = await axios(request)
             const data = response.data
 
             const authorRegex = /\/\/(.+)\.github.io/
-            const repoAuthor = repo.match(authorRegex)[1]
+            const repoAuthor = repo.url.match(authorRegex)[1]
 
             const nameRegex = /github.io\/+(.+)/
-            const repoName = repo.match(nameRegex)[1]
-        
+            const repoName = repo.url.match(nameRegex)[1]
+
             repoData.push({
                 author: {
                     name: repoAuthor,
                     url: `https://github.com/${repoAuthor}`
                 },
                 repoURL: `https://github.com/${repoAuthor}/${repoName.split('/').shift()}`,
-                baseURL: repo,
-                name: repoName,
+                baseURL: repo.url,
+                name: repo.name ? repo.name : repoName,// If no friendly repon name is provided, use the repoName
                 lastUpdated: data.buildTime,
                 sources: data.sources
             })
@@ -72,7 +72,7 @@ async function init() {
 
     const embeds = []
     for (const repo of repoData) {
-        const sourceChunk = chunk(repo.sources.sort().map(x => `[${x.name}](${repo.baseURL})`), 5)
+        const sourceChunk = chunk(repo.sources.sort().map(x => `[${x.name}](${repo.baseURL})`), config.sourcesPerField)
 
         const fields = []
         let isFirst = true
@@ -93,12 +93,12 @@ async function init() {
             },
             'title': repo.name,
             'url': repo.baseURL,
-            'description': 'This embed has all the sources within this repo.\nClick the source name to go to the repo',
+            'description': `This embed has all the sources within this repo.\nClick the source name to go to the repo\n[Click Here](https://paperback.moe/addRepo/?name=${encodeURI(repo.name)}&url=${repo.baseURL}) to open in Paperback`,
             'color': config.color,
             'fields': fields,
             'timestamp': repo.lastUpdated,
             'footer': {
-                'text': 'Last update at'
+                'text': 'Last repo update at'
             }
         })
     }
