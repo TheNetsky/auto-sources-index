@@ -3,4 +3,4 @@ Used to automatically update and/or post embeds in the source index channel for 
 
 The index get's updated every ~2hrs.
 
-Fetches repo list from [here](https://github.com/TheNetsky/static-files/blob/main/AutoSources/repos.json)
+Fetches repo list from [here](https://github.com/TheNetsky/static-files/blob/main/AutoSources/repos.json)!
