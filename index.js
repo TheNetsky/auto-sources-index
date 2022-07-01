@@ -93,7 +93,7 @@ async function init() {
             },
             'title': repo.name,
             'url': repo.baseURL,
-            'description': `This embed has all the sources within this repo.\nClick the source name to go to the repo\n[Click Here](https://paperback.moe/addRepo/?name=${encodeURI(repo.name)}&url=${repo.baseURL}) to open in Paperback`,
+            'description': `This embed has all the sources within this repo.\nClick the source name to go to the repo\n\n[Click Here](https://paperback.moe/addRepo/?name=${encodeURI(repo.name)}&url=${repo.baseURL}) to open in Paperback`,
             'color': config.color,
             'fields': fields,
             'timestamp': repo.lastUpdated,
