@@ -43,12 +43,13 @@ async function init() {
 
             const nameRegex = /github.io\/+(.+)/
             const repoName = repo.match(nameRegex)[1]
-
+        
             repoData.push({
                 author: {
                     name: repoAuthor,
                     url: `https://github.com/${repoAuthor}`
                 },
+                repoURL: `https://github.com/${repoAuthor}/${repoName.split('/').shift()}`,
                 baseURL: repo,
                 name: repoName,
                 lastUpdated: data.buildTime,
@@ -88,7 +89,7 @@ async function init() {
         embeds.push({
             'author': {
                 'name': `Owned and maintained by: ${repo.author.name}`,
-                'url': repo.author.url
+                'url': repo.repoURL
             },
             'title': repo.name,
             'url': repo.baseURL,
