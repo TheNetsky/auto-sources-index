@@ -77,7 +77,7 @@ async function init() {
                 sources: data.sources
             })
 
-            await new Promise(r => setTimeout(r, 1000)) // Small timeout just in case!
+            await new Promise(r => setTimeout(r, 500)) // Small timeout just in case!
 
         } catch (error) {
             throw new Error(error)
@@ -110,7 +110,7 @@ async function init() {
             },
             'title': repo.name,
             'url': repo.baseURL,
-            'description': `This embed has all the sources within this repo.\nClick the source name to go to the repo\n\n\`Base URL: ${repo.baseURL}\`\n\n[Click Here](https://paperback.moe/addRepo/?name=${encodeURI(repo.name)}&url=${repo.baseURL}) to open in Paperback`,
+            'description': `This embed has all the sources within this repo.\nClick the source name to go to the repo.\n\n**Base URL:**\n\`${repo.baseURL}\`\n\n[Click Here](https://paperback.moe/addRepo/?name=${encodeURI(repo.name)}&url=${repo.baseURL}) to open in Paperback`,
             'color': config.color,
             'fields': fields,
             'timestamp': repo.lastUpdated,
@@ -121,6 +121,7 @@ async function init() {
     }
 
     // Send the webhook(s)
+    let i = 1
     for (const embed of embeds) {
         const getMessageId = await db.get(embed.url)
 
@@ -155,19 +156,19 @@ async function init() {
             response = await axios(request)
         } catch (error) {
             throw new Error(error)
+        } finally {
+            console.log(`Posted ${i++}/${embeds.length} | ${embed.url}`)
         }
 
         if (!response.data.id) throw new Error(`No messageId from response Err: ${JSON.stringify(response)}`)
 
         // Store messageId in database
-        db.set(embed.url, response.data.id)
+        await db.set(embed.url, response.data.id)
 
-        console.log(`${embed.url} webhook posted/edited!`)
-
-        await new Promise(r => setTimeout(r, 5000)) // A 5 second delay to avoid being ratelimited!
+        await new Promise(r => setTimeout(r, 3000)) // A 3 second delay to avoid being ratelimited!
     }
 
-    console.log('Done!')
+    console.log('Finished updating/posting webhooks.')
     process.exitCode = 1
 }
 
