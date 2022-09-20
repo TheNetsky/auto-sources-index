@@ -7,15 +7,16 @@ const db = new jsoning('webhooks-db.json')
 const config = require('./config.json')
 
 // Express
-const express = require('express')
-const app = express()
+if (config.expresServer) {
+    const express = require('express')
+    const app = express()
 
-app.get("/", (req, res) => {
-    console.log(new Date().toString() + " Ping Received")
-    res.status(200).send('Updating source index...')
-})
-app.listen(process.env.PORT)
-
+    app.get("/", (req, res) => {
+        console.log(new Date().toString() + " Ping Received")
+        res.status(200).send('Updating source index...')
+    })
+    app.listen(process.env.PORT)
+}
 
 // Array chunker
 function chunk(arr, size) {
@@ -176,4 +177,4 @@ init()
 setInterval(() => {
     console.log('Posting...')
     init()
-}, 3600000 )
+}, 3600000)
