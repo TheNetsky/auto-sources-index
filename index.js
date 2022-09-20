@@ -6,7 +6,28 @@ require('dotenv').config()
 const db = new jsoning('webhooks-db.json')
 const config = require('./config.json')
 
+// Express
+const express = require('express')
+const app = express()
 
+app.get("/", (req, res) => {
+    console.log(new Date().toString() + " Ping Received")
+    res.status(200).send('Updating source index...')
+})
+app.listen(process.env.PORT)
+
+
+// Array chunker
+function chunk(arr, size) {
+    let r = [], i = 0, l = arr.length
+    for (; i < l; i += size) {
+        r.push(arr.slice(i, i + size))
+    }
+    return r
+}
+
+
+// Main function
 async function init() {
 
     let repos
@@ -17,7 +38,6 @@ async function init() {
         }
 
         const response = await axios(request)
-
         if (!response.data.repos) throw new Error(`No repos from response Err: ${JSON.stringify(response)}`)
 
         repos = response.data.repos
@@ -51,24 +71,21 @@ async function init() {
                 },
                 repoURL: `https://github.com/${repoAuthor}/${repoName.split('/').shift()}`,
                 baseURL: repo.url,
-                name: repo.name ? repo.name : repoName,// If no friendly repon name is provided, use the repoName
+                name: repo.name ? repo.name : repoName, // If no friendly repon name is provided, use the repoName
                 lastUpdated: data.buildTime,
                 sources: data.sources
             })
 
+            await new Promise(r => setTimeout(r, 1000)) // Small timeout just in case!
+
         } catch (error) {
             throw new Error(error)
+        } finally {
+            console.log(`Fetched ${repoData.length}/${repos.length} | ${repo.url}`)
         }
-
     }
 
-    function chunk(arr, size) {
-        let r = [], i = 0, l = arr.length
-        for (; i < l; i += size) {
-            r.push(arr.slice(i, i + size))
-        }
-        return r
-    }
+    console.log('Finished fetching repos.')
 
     const embeds = []
     for (const repo of repoData) {
@@ -83,7 +100,6 @@ async function init() {
                 'inline': true
             })
             isFirst = false
-
         }
 
         embeds.push({
@@ -93,7 +109,7 @@ async function init() {
             },
             'title': repo.name,
             'url': repo.baseURL,
-            'description': `This embed has all the sources within this repo.\nClick the source name to go to the repo\n\n[Click Here](https://paperback.moe/addRepo/?name=${encodeURI(repo.name)}&url=${repo.baseURL}) to open in Paperback`,
+            'description': `This embed has all the sources within this repo.\nClick the source name to go to the repo\n\n\`Base URL: ${repo.baseURL}\`\n\n[Click Here](https://paperback.moe/addRepo/?name=${encodeURI(repo.name)}&url=${repo.baseURL}) to open in Paperback`,
             'color': config.color,
             'fields': fields,
             'timestamp': repo.lastUpdated,
@@ -119,6 +135,7 @@ async function init() {
                     'embeds': [embed]
                 }
             }
+
         } else {
             request = {
                 method: 'POST',
@@ -145,7 +162,8 @@ async function init() {
         db.set(embed.url, response.data.id)
 
         console.log(`${embed.url} webhook posted/edited!`)
-        await new Promise(r => setTimeout(r, 2000));
+
+        await new Promise(r => setTimeout(r, 5000)) // A 5 second delay to avoid being ratelimited!
     }
 
     console.log('Done!')
@@ -153,3 +171,9 @@ async function init() {
 }
 
 init()
+
+// Set interval to repeat the main function every 1 hour
+setInterval(() => {
+    console.log('Posting...')
+    init()
+}, 3600000 )
