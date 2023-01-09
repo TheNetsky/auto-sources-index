@@ -27,6 +27,56 @@ function chunk(arr, size) {
     return r
 }
 
+// Get flag emotes
+function applyEmotes(item) {
+    let emotes = ''
+
+    let tags = []
+    if (item.tags && item.tags.length > 0) {
+        tags = item.tags.find(x => x.type == 'info') ?? []
+        if (!Array.isArray(tags)) tags = [tags]
+    }
+
+    for (const tag of tags) {
+        switch (tag.text.toUpperCase()) {
+            case 'SPANISH':
+                emotes = '🇪🇸'
+                break
+            case 'BRAZIL':
+                emotes = '🇧🇷'
+                break
+            case 'RAW':
+            case 'JAPANESE':
+                emotes = '🇯🇵'
+                break
+            case 'FRENCH':
+                emotes = '🇫🇷'
+                break
+            case 'RUSSIAN':
+                emotes = '🇷🇺'
+                break
+            case 'ARABBIC':
+                emotes = '🇦🇪'
+                break
+            case 'PORTUGUESE':
+                emotes = '🇵🇹'
+                break
+            case 'ITALIAN':
+                emotes = '🇮🇹'
+                break
+            case 'GERMAN':
+                emotes = '🇩🇪'
+                break
+        }
+    }
+
+    if (item.contentRating == 'ADULT') {
+        emotes += config.adult_emote
+    }
+
+    return emotes
+}
+
 
 // Main function
 async function init() {
@@ -77,7 +127,7 @@ async function init() {
                 sources: data.sources
             })
 
-            await new Promise(r => setTimeout(r, 500)) // Small timeout just in case!
+            await new Promise(r => setTimeout(r, 200)) // Small timeout just in case!
 
         } catch (error) {
             throw new Error(error)
@@ -90,7 +140,7 @@ async function init() {
 
     const embeds = []
     for (const repo of repoData) {
-        const sourceChunk = chunk(repo.sources.sort().map(x => `[${x.name}](${repo.baseURL})`), config.sourcesPerField)
+        const sourceChunk = chunk(repo.sources.sort().map(x => `[${x.name}](${repo.baseURL}) ${applyEmotes(x)}`), config.sourcesPerField)
 
         const fields = []
         let isFirst = true
@@ -110,7 +160,7 @@ async function init() {
             },
             'title': repo.name,
             'url': repo.baseURL,
-            'description': `This embed has all the sources within this repo.\nClick the source name to go to the repo.\n\n**Base URL:**\n\`${repo.baseURL}\`\n\n[Click Here](https://paperback.moe/addRepo/?name=${encodeURI(repo.name)}&url=${repo.baseURL}) to open in Paperback`,
+            'description': `This embed has all the sources within this repo.\nClick the source name to go to the repo.\n\n**Base URL:**\n${repo.baseURL}\n\n[Click Here](https://paperback.moe/addRepo/?name=${encodeURI(repo.name)}&url=${repo.baseURL}) to open in Paperback`,
             'color': config.color,
             'fields': fields,
             'timestamp': repo.lastUpdated,
