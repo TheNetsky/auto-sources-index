@@ -55,7 +55,8 @@ function applyEmotes(item) {
             case 'RUSSIAN':
                 emotes = '🇷🇺'
                 break
-            case 'ARABBIC':
+            case 'ARABIC':
+            case "العربية":
                 emotes = '🇦🇪'
                 break
             case 'PORTUGUESE':
