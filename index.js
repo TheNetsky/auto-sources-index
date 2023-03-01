@@ -33,7 +33,7 @@ function applyEmotes(item) {
 
     let tags = []
     if (item.tags && item.tags.length > 0) {
-        tags = item.tags.find(x => x.type == 'info') ?? []
+        tags = item.tags.find(x => x.type == 'info') ? item.tags.find(x => x.type == 'info') : []
         if (!Array.isArray(tags)) tags = [tags]
     }
 
@@ -124,7 +124,8 @@ async function init() {
                 baseURL: repo.url,
                 name: repo.name ? repo.name : repoName, // If no friendly repon name is provided, use the repoName
                 lastUpdated: data.buildTime,
-                sources: data.sources
+                sources: data.sources,
+                devId: repo.devId
             })
 
             await new Promise(r => setTimeout(r, 200)) // Small timeout just in case!
@@ -160,7 +161,7 @@ async function init() {
             },
             'title': repo.name,
             'url': repo.baseURL,
-            'description': `This embed has all the sources within this repo.\nClick the source name to go to the repo.\n\n**Base URL:**\n${repo.baseURL}\n\n[Click Here](https://paperback.moe/addRepo/?name=${encodeURI(repo.name)}&url=${repo.baseURL}) to open in Paperback`,
+            'description': `This embed has all the sources within this repo.\nClick the source name to go to the repo.\n\nDeveloper Discord: ${repo.devId ? `<@${repo.devId}>` : 'N/A'}\n\n**Base URL:**\n${repo.baseURL}\n\n[Click Here](https://paperback.moe/addRepo/?name=${encodeURI(repo.name)}&url=${repo.baseURL}) to open in Paperback`,
             'color': config.color,
             'fields': fields,
             'timestamp': repo.lastUpdated,
