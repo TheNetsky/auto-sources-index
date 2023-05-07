@@ -1,23 +1,29 @@
 {
-  "dependencies": {
-    "axios": "^0.27.2",
-    "dotenv": "^16.0.1",
-    "express": "^4.18.1",
-    "jsoning": "^0.13.23"
-  },
   "name": "auto-sources-index",
-  "version": "1.1.2",
-  "main": "index.js",
-  "devDependencies": {},
+  "version": "2.0.0",
+  "main": "src/index.ts",
+  "author": "Netsky",
+  "license": "ISC",
+  "description": "Auto-post sources",
   "scripts": {
-    "start": "node index.js"
+    "build": "npx tsc -build tsconfig.json",
+    "start": "node ./compiled/src/index.js",
+    "start:ts": "ts-node src/index.ts",
+    "dev": "nodemon"
   },
   "engines": {
     "npm": ">=8.0.0 <9.0.0",
     "node": ">=16.0.0"
   },
-  "keywords": [],
-  "author": "Netsky",
-  "license": "ISC",
-  "description": "Simple script for updating the sources list in a Discord server."
+  "dependencies": {
+    "axios": "^1.4.0",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "jsoning": "^0.13.23",
+    "ts-node": "^10.9.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.17",
+    "@types/node": "^20.1.0"
+  }
 }
