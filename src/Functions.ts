@@ -56,6 +56,9 @@ export function applyEmotes(source: Source) {
             case 'GERMAN':
                 emotes = '🇩🇪'
                 break
+            case 'TURKISH':
+                emotes = '🇹🇷'
+                break
         }
     }
 
